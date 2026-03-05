@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="es">
-<head><meta name="cryptomus" content="e8c19596" />
+<head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>🛒Digital Nicaragua</title>
@@ -113,6 +113,8 @@
             z-index: 1100;
             text-decoration: none;
         }
+        /* Botón Cryptomus extra */
+        .btn-cryptomus { width: 100%; padding: 12px; margin-bottom: 10px; cursor: pointer; border: 2px solid #5b45ff; border-radius: 8px; background: white; font-weight: bold; display: flex; align-items: center; justify-content: center; gap: 8px; }
     </style>
 </head>
 <body>
@@ -152,69 +154,61 @@
         <div id="carrito-items"></div>
         
         <div class="total" style="border-top: 2px solid #ddd; padding-top: 15px;">Total: C$ <span id="total-nio">0.00</span></div>
-        <div class="total" style="font-size: 16px; color: #7f8c8d;">(Equivale a: <span id="total">0.00</span> €)</div>
+        <div class="total" style="font-size: 16px; color: #7f8c8d; margin-bottom: 20px;">(Equivale a: <span id="total">0.00</span> €)</div>
         
-        <button class="btn-finalizar" onclick="finalizarCompra()">Realizar pedido por WhatsApp</button>
-        
-        <div id="paypal-button-container"></div>
+        <div style="margin-top: 15px; padding-top: 15px; border-top: 2px dashed #ccc;">
+            <button class="btn-finalizar" onclick="finalizarCompra()">Realizar pedido por WhatsApp</button>
+            
+            <button class="btn-cryptomus" onclick="window.location.href='https://cryptomus.com/pay/TU_ID_AQUI'">
+                <img src="https://cryptomus.com/img/logo/logo-short.svg" alt="Cryptomus" width="20">
+                Pagar con Cryptomus
+            </button>
+            
+            <p style="text-align: center; font-size: 12px; margin: 10px 0;">o paga con:</p>
+            <div id="paypal-button-container"></div>
+        </div>
     </div>
 
     <script>
-        // CONFIGURACIÓN
         const instanceId = "instance163295";
         const token = "72dtaq4u270hmtw5";
         const miNumero = "50588551197";
-        const tasaCambioNio = 40.00; // 1 EUR = 40 NIO
+        const tasaCambioNio = 40.00;
 
         const productos = [
-            // CURSOS
             {id: 1, nombre: "Curso JavaScript", categoria: "cursos", precio: 25.00, descripcion: "Aprende JS desde cero hasta avanzado", img: "https://cdn-icons-png.flaticon.com/512/5968/5968292.png"},
             {id: 2, nombre: "Curso Python", categoria: "cursos", precio: 30.00, descripcion: "Python para ciencia de datos y web", img: "https://cdn-icons-png.flaticon.com/512/5968/5968350.png"},
             {id: 3, nombre: "Marketing Digital", categoria: "cursos", precio: 20.00, descripcion: "Estrategias de ADS y Redes", img: "https://cdn-icons-png.flaticon.com/512/1998/1998087.png"},
             {id: 4, nombre: "Diseño Gráfico", categoria: "cursos", precio: 23.00, descripcion: "Domina la Suite de Adobe", img: "https://cdn-icons-png.flaticon.com/512/2970/2970785.png"},
             {id: 5, nombre: "Excel Profesional", categoria: "cursos", precio: 15.00, descripcion: "Macros, Tablas y Dashboards", img: "https://cdn-icons-png.flaticon.com/512/732/732220.png"},
-
-            // JUEGOS - Actualizados a precios oficiales en EUR
             {id: 6, nombre: "Free Fire", categoria: "juegos", requiereID: true, esDiamante: true, unidadNombre: "Diamantes", opciones: [{n: "100 Diamantes", p: 1.00}, {n: "310 Diamantes", p: 3.10}, {n: "520 Diamantes", p: 5.20}, {n: "1060 Diamantes", p: 10.60}, {n: "2180 Diamantes", p: 21.80}], img: "01c96cbb-5db2-449c-802b-58afd102a98c.jpg"},
             {id: 7, nombre: "Fortnite", categoria: "juegos", requiereID: true, esDiamante: true, unidadNombre: "V-Bucks", opciones: [{n: "1000 V-Bucks", p: 8.99}, {n: "2800 V-Bucks", p: 22.99}, {n: "5000 V-Bucks", p: 36.99}], img: "https://upload.wikimedia.org/wikipedia/commons/7/7c/Fortnite_F_lettermark_logo.png"},
             {id: 8, nombre: "PUBG Mobile", categoria: "juegos", requiereID: true, esDiamante: true, unidadNombre: "UC", opciones: [{n: "60 UC", p: 0.99}, {n: "325 UC", p: 4.99}, {n: "660 UC", p: 9.99}], img: "d2c8ccfa-ae84-471f-8e52-2d70a71ef42e.jpg"},
             {id: 9, nombre: "Roblox", categoria: "juegos", requiereID: true, esDiamante: true, unidadNombre: "Robux", opciones: [{n: "400 Robux", p: 5.99}, {n: "800 Robux", p: 11.99}, {n: "1700 Robux", p: 23.99}], img: "https://upload.wikimedia.org/wikipedia/commons/3/3a/Roblox_player_icon_black.svg"},
             {id: 10, nombre: "Clash of Clans", categoria: "juegos", requiereID: true, esDiamante: true, unidadNombre: "Gemas", opciones: [{n: "500 Gemas", p: 4.99}, {n: "1200 Gemas", p: 11.99}, {n: "2500 Gemas", p: 23.99}], img: "8d95ca46-a2ed-42b7-92bd-d1454c15dc4e.jpg"},
             {id: 21, nombre: "Mobile Legends", categoria: "juegos", requiereID: true, esDiamante: true, unidadNombre: "Diamantes", img: "c46e2745-abe2-46e1-8425-3d45075db066.jpg", opciones: [{n: "100 Diamonds", p: 2.19}, {n: "500 Diamonds", p: 10.99}, {n: "Twilight Pass", p: 11.49}]},
-
-            // SERVICIOS
             {id: 11, nombre: "Diseño de Logo", categoria: "servicios", precio: 45.00, descripcion: "3 propuestas iniciales", img: "https://cdn-icons-png.flaticon.com/512/1055/1055666.png"},
             {id: 12, nombre: "Edición de Video", categoria: "servicios", precio: 35.00, descripcion: "Edición profesional para redes", img: "https://cdn-icons-png.flaticon.com/512/4406/4406124.png"},
             {id: 13, nombre: "Desarrollo Web", categoria: "servicios", precio: 150.00, descripcion: "Landing Page Corporativa", img: "https://cdn-icons-png.flaticon.com/512/1157/1157109.png"},
             {id: 14, nombre: "Consultoría SEO", categoria: "servicios", precio: 60.00, descripcion: "Auditoría y Plan de Palabras", img: "https://cdn-icons-png.flaticon.com/512/1055/1055644.png"},
             {id: 15, nombre: "Redes Sociales", categoria: "servicios", precio: 85.00, descripcion: "Gestión básica (12 posts/mes)", img: "https://cdn-icons-png.flaticon.com/512/1968/1968641.png"},
-
-            // SOFTWARE
             {id: 16, nombre: "Office 365", categoria: "software", precio: 15.00, descripcion: "Cuenta Personal 1 Año", img: "https://cdn-icons-png.flaticon.com/512/732/732221.png"},
             {id: 17, nombre: "Antivirus (Eset/Kaspersky)", categoria: "software", precio: 13.00, descripcion: "Licencia 1 Dispositivo/Año", img: "https://cdn-icons-png.flaticon.com/512/714/714412.png"},
             {id: 18, nombre: "VPN Premium", categoria: "software", precio: 10.00, descripcion: "Acceso ilimitado 1 Mes", img: "https://cdn-icons-png.flaticon.com/512/2092/2092203.png"},
             {id: 19, nombre: "Adobe Creative Cloud", categoria: "software", precio: 35.00, descripcion: "Acceso mensual todas las Apps", img: "https://cdn-icons-png.flaticon.com/512/5968/5968397.png"},
             {id: 20, nombre: "Spotify Premium", categoria: "software", precio: 7.00, descripcion: "Plan Individual 1 Mes", img: "https://cdn-icons-png.flaticon.com/512/174/174872.png"},
-
-            // INFORMÁTICA
             {id: 22, nombre: "Auditoría de Seguridad", categoria: "informatica", precio: 75.00, descripcion: "Escaneo de vulnerabilidades", img: "https://cdn-icons-png.flaticon.com/512/2716/2716612.png"},
             {id: 23, nombre: "Limpieza de Malware", categoria: "informatica", precio: 25.00, descripcion: "Optimización y limpieza remota", img: "https://cdn-icons-png.flaticon.com/512/2592/2592201.png"},
             {id: 24, nombre: "Recuperación de Datos", categoria: "informatica", precio: 50.00, descripcion: "Software recovery especializado", img: "https://cdn-icons-png.flaticon.com/512/2906/2906313.png"},
             {id: 25, nombre: "Instalación de S.O.", categoria: "informatica", precio: 20.00, descripcion: "Formateo remoto asistido", img: "https://cdn-icons-png.flaticon.com/512/2258/2258547.png"},
             {id: 26, nombre: "Cifrado de Discos", categoria: "informatica", precio: 35.00, descripcion: "Configuración BitLocker/VeraCrypt", img: "https://cdn-icons-png.flaticon.com/512/2569/2569174.png"},
-
-            // CIBER-SERVICIOS
             {id: 27, nombre: "Recuperación de Cuentas", categoria: "ciber", precio: 45.00, descripcion: "Asistencia recuperación acceso", img: "https://cdn-icons-png.flaticon.com/512/6146/6146587.png"},
             {id: 28, nombre: "Auditoría de Perfiles", categoria: "ciber", precio: 30.00, descripcion: "Análisis de seguridad y privacidad", img: "https://cdn-icons-png.flaticon.com/512/10149/10149313.png"},
             {id: 29, nombre: "Protección Anti-Hacking", categoria: "ciber", precio: 35.00, descripcion: "2FA y blindaje de perfiles", img: "https://cdn-icons-png.flaticon.com/512/2092/2092215.png"},
-
-            // HERRAMIENTAS
             {id: 30, nombre: "Pack Keyloggers Pro", categoria: "herramientas", precio: 15.00, descripcion: "Herramienta educativa/monitoreo", img: "https://cdn-icons-png.flaticon.com/512/3588/3588267.png"},
             {id: 31, nombre: "Scanner Vulnerabilidades", categoria: "herramientas", precio: 45.00, descripcion: "Buscador de fallos en redes", img: "https://cdn-icons-png.flaticon.com/512/4341/4341753.png"},
             {id: 32, nombre: "Kit Pentesting", categoria: "herramientas", precio: 55.00, descripcion: "Scripts de seguridad avanzados", img: "https://cdn-icons-png.flaticon.com/512/3067/3067451.png"},
             {id: 33, nombre: "Exploit Pack 2026", categoria: "herramientas", precio: 85.00, descripcion: "Scripts de automatización avanzada", img: "https://cdn-icons-png.flaticon.com/512/3665/3665942.png"},
-
-            // CRIPTOS
             {id: 34, nombre: "Bitcoin (BTC)", categoria: "criptos", requiereID: true, esDiamante: true, unidadNombre: "BTC", img: "https://cdn-icons-png.flaticon.com/512/5968/5968260.png", opciones: [{n: "0.0005 BTC", p: 52.00}, {n: "0.001 BTC", p: 104.00}], placeholder: "Dirección Wallet (Red BTC)"},
             {id: 35, nombre: "Ethereum (ETH)", categoria: "criptos", requiereID: true, esDiamante: true, unidadNombre: "ETH", img: "https://cdn-icons-png.flaticon.com/512/7016/7016523.png", opciones: [{n: "0.01 ETH", p: 26.00}, {n: "0.05 ETH", p: 130.00}], placeholder: "Dirección Wallet (Red ERC20)"},
             {id: 36, nombre: "Tether (USDT)", categoria: "criptos", requiereID: true, esDiamante: true, unidadNombre: "USDT", img: "https://cdn-icons-png.flaticon.com/512/825/825508.png", opciones: [{n: "20 USDT (TRC20)", p: 22.00}, {n: "50 USDT (TRC20)", p: 54.00}, {n: "100 USDT (TRC20)", p: 107.00}], placeholder: "Dirección Wallet (Red TRC20)"},
@@ -234,7 +228,6 @@
             const contenedor = document.getElementById('productos');
             contenedor.innerHTML = '';
             const filtrados = categoriaActual === 'todos' ? productos : productos.filter(p => p.categoria === categoriaActual);
-            
             filtrados.forEach(p => {
                 const div = document.createElement('div');
                 div.className = 'producto';
@@ -261,7 +254,6 @@
         function agregarAlCarrito(id) {
             const p = productos.find(x => x.id === id);
             let playerID = '', nombreOpcion = p.nombre, precioFinal = p.precio;
-
             if (p.requiereID) {
                 playerID = document.getElementById(`id-${id}`).value.trim();
                 const index = document.getElementById(`qty-${id}`).value;
@@ -270,14 +262,7 @@
                 precioFinal = seleccion.p;
                 if (!playerID) { alert(p.placeholder ? 'Por favor, ingresa tu Wallet' : 'Por favor, ingresa tu ID de jugador'); return; }
             }
-            
             carrito.push({nombre: nombreOpcion, precio: precioFinal, playerID: playerID});
-            
-            const btnCarrito = document.getElementById('btn-carrito');
-            btnCarrito.classList.remove('animar-carrito');
-            void btnCarrito.offsetWidth; 
-            btnCarrito.classList.add('animar-carrito');
-
             actualizarCarrito();
         }
 
@@ -286,34 +271,19 @@
             const totalElement = document.getElementById('total');
             const totalNioElement = document.getElementById('total-nio');
             const btnCarrito = document.getElementById('btn-carrito');
-            
             contenedor.innerHTML = '';
             let t = 0;
             carrito.forEach((item, i) => {
                 const div = document.createElement('div');
                 div.className = 'item-carrito';
-                div.innerHTML = `
-                    <div style="display:flex; justify-content:space-between; align-items:start;">
-                        <div>
-                            <strong>${item.nombre}</strong><br>
-                            ${item.playerID ? `<small style="color:#e67e22">Destino: ${item.playerID}</small><br>` : ''}
-                            <span style="font-weight:bold">C$ ${(item.precio * tasaCambioNio).toFixed(2)}</span>
-                        </div>
-                        <button onclick="eliminar(${i})" style="background:#e74c3c;color:white;border:none;padding:5px 8px;cursor:pointer;border-radius:5px;font-size:12px;">Eliminar</button>
-                    </div>
-                `;
+                div.innerHTML = `<div style="display:flex; justify-content:space-between; align-items:start;"><div><strong>${item.nombre}</strong><br>${item.playerID ? `<small style="color:#e67e22">Destino: ${item.playerID}</small><br>` : ''}<span style="font-weight:bold">C$ ${(item.precio * tasaCambioNio).toFixed(2)}</span></div><button onclick="eliminar(${i})" style="background:#e74c3c;color:white;border:none;padding:5px 8px;cursor:pointer;border-radius:5px;font-size:12px;">✕</button></div>`;
                 contenedor.appendChild(div);
                 t += item.precio;
             });
             totalElement.textContent = t.toFixed(2);
             totalNioElement.textContent = (t * tasaCambioNio).toFixed(2);
-
             btnCarrito.textContent = `🛒 Carrito (${carrito.length})`;
-            if (carrito.length > 0) {
-                btnCarrito.classList.replace('carrito-vacio', 'carrito-con-items');
-            } else {
-                btnCarrito.classList.replace('carrito-con-items', 'carrito-vacio');
-            }
+            btnCarrito.className = `btn-toggle-carrito ${carrito.length > 0 ? 'carrito-con-items' : 'carrito-vacio'}`;
         }
 
         function eliminar(i) { carrito.splice(i, 1); actualizarCarrito(); }
@@ -322,56 +292,32 @@
             if (carrito.length === 0) { alert('El carrito está vacío'); return; }
             let m = '🚀 *Nuevo Pedido - Digital Nicaragua*\n\n';
             let total = 0;
-            carrito.forEach(i => {
-                m += `▪️ ${i.nombre}\n   ${i.playerID ? 'Destino: ' + i.playerID : ''} - *${i.precio.toFixed(2)}€*\n`;
-                total += i.precio;
-            });
+            carrito.forEach(i => { m += `▪️ ${i.nombre}\n   ${i.playerID ? 'Destino: ' + i.playerID : ''} - *${i.precio.toFixed(2)}€*\n`; total += i.precio; });
             m += `\n💰 *Total a pagar: ${total.toFixed(2)}€*`;
             window.open(`https://wa.me/${miNumero}?text=${encodeURIComponent(m)}`, '_blank');
         }
 
-        // FUNCIÓN PARA ENVÍO AUTOMÁTICO DE WHATSAPP (ULTRAMSG)
         function enviarWhatsAppAutomatico(detalles) {
             let pedido = "✅ *PAGO RECIBIDO POR PAYPAL*%0A%0A";
             pedido += `👤 *Cliente:* ${detalles.payer.name.given_name}%0A`;
             pedido += `💰 *Monto:* ${detalles.purchase_units[0].amount.value} EUR%0A%0A`;
             pedido += "*PRODUCTOS:*%0A";
-            carrito.forEach((p, i) => {
-                pedido += `*${i+1}.* ${p.nombre}%0A   └ ID: ${p.playerID || 'Digital'}%0A`;
-            });
-            
+            carrito.forEach((p, i) => { pedido += `*${i+1}.* ${p.nombre}%0A   └ ID: ${p.playerID || 'Digital'}%0A`; });
             const url = `https://api.ultramsg.com/${instanceId}/messages/chat?token=${token}&to=${miNumero}&body=${pedido}`;
             fetch(url).then(() => console.log("WhatsApp enviado")).catch(err => console.error(err));
         }
 
-        // INTEGRACIÓN PAYPAL ACTUALIZADA
         paypal.Buttons({
             createOrder: function(data, actions) {
                 const totalAmount = document.getElementById('total').textContent;
-                if (parseFloat(totalAmount) <= 0) {
-                    alert('Añade productos para pagar');
-                    return actions.reject();
-                }
-
-                return actions.order.create({
-                    purchase_units: [{
-                        amount: { 
-                            currency_code: 'EUR',
-                            value: totalAmount 
-                        },
-                        description: "Compra Digital Nicaragua"
-                    }]
-                });
+                if (parseFloat(totalAmount) <= 0) { alert('Añade productos para pagar'); return actions.reject(); }
+                return actions.order.create({ purchase_units: [{ amount: { currency_code: 'EUR', value: totalAmount }, description: "Compra Digital Nicaragua" }] });
             },
             onApprove: function(data, actions) {
                 return actions.order.capture().then(function(details) {
-                    // SE ENVÍA EL WHATSAPP AUTOMÁTICAMENTE TRAS EL PAGO
                     enviarWhatsAppAutomatico(details);
-                    
-                    alert('¡Pago exitoso! El administrador ha sido notificado automáticamente.');
-                    carrito = [];
-                    actualizarCarrito();
-                    toggleCarrito();
+                    alert('¡Pago exitoso! El administrador ha sido notificado.');
+                    carrito = []; actualizarCarrito(); toggleCarrito();
                 });
             }
         }).render('#paypal-button-container');
@@ -379,5 +325,4 @@
         renderizarProductos();
     </script>
 </body>
-
 </html>
