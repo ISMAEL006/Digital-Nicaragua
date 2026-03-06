@@ -3,19 +3,19 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Digital Nicaragua | Software y Consultoría</title>
+    <title>Digital Nicaragua | Soluciones Digitales</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font-family: 'Segoe UI', Arial, sans-serif; background: #f4f7f9; color: #333; line-height: 1.6; }
         header { background: #1a252f; color: #fff; padding: 40px 20px; text-align: center; border-bottom: 4px solid #3498db; }
-        .container { max-width: 900px; margin: 30px auto; padding: 20px; }
+        .container { max-width: 1000px; margin: 30px auto; padding: 20px; }
         
-        /* Estilo de productos funcional */
-        .producto { background: #fff; padding: 25px; margin-bottom: 20px; border-radius: 8px; border: 1px solid #e1e8ed; cursor: pointer; transition: 0.3s; }
-        .producto:hover { border-color: #3498db; transform: translateY(-2px); }
-        .btn-add { background: #3498db; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer; margin-top: 10px; font-weight: bold; }
+        .grid-productos { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; margin-top: 20px; }
+        .producto { background: #fff; padding: 25px; border-radius: 8px; border: 1px solid #e1e8ed; transition: 0.3s; }
+        .producto:hover { border-color: #3498db; box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
+        .btn-add { background: #3498db; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer; width: 100%; font-weight: bold; margin-top: 15px; }
         
-        .btn-pay { background: #000; color: #fff; padding: 15px 30px; border: none; border-radius: 5px; cursor: pointer; font-weight: bold; width: 100%; font-size: 16px; margin-top: 20px; }
+        .btn-pay { background: #000; color: #fff; padding: 15px; border: none; border-radius: 5px; cursor: pointer; width: 100%; font-size: 18px; margin-top: 30px; }
         footer { background: #1a252f; color: #95a5a6; padding: 40px; text-align: center; margin-top: 50px; font-size: 14px; }
         .legal-links a { color: #3498db; margin: 0 10px; text-decoration: none; }
     </style>
@@ -24,49 +24,70 @@
 
     <header>
         <h1>Digital Nicaragua</h1>
-        <p>Expertos en licencias de software y consultoría técnica</p>
+        <p>Servicios Profesionales de Software y Consultoría</p>
     </header>
 
     <div class="container">
+        <section style="background: #fff; padding: 30px; border-radius: 8px; margin-bottom: 30px; border-left: 5px solid #3498db;">
+            <h2>Nuestra Empresa</h2>
+            <p>Digital Nicaragua ofrece soluciones digitales de alta calidad para empresas y profesionales. Nuestra misión es facilitar el acceso a software original y servicios de optimización técnica en toda la región.</p>
+        </section>
+
         <h3>Catálogo de Servicios</h3>
-        <div id="lista-productos">
-            <div class="producto" onclick="agregarCarrito('Office 365', 600)">
-                <h4>Licencia Office 365 (1 Año)</h4>
-                <p>Suite de oficina profesional.</p>
-                <p><strong>Precio: C$ 600.00</strong></p>
-                <button class="btn-add">Añadir al carrito</button>
+        <div class="grid-productos">
+            <div class="producto">
+                <h4>Licencia Office 365 Pro</h4>
+                <p>Suite de oficina original (1 año).</p>
+                <p><strong>C$ 600.00</strong></p>
+                <button class="btn-add" onclick="agregar('Office 365')">Seleccionar</button>
             </div>
-            <div class="producto" onclick="agregarCarrito('Optimización PC', 800)">
-                <h4>Consultoría de Optimización PC</h4>
-                <p>Servicio remoto de mejora de rendimiento.</p>
-                <p><strong>Precio: C$ 800.00</strong></p>
-                <button class="btn-add">Añadir al carrito</button>
+            <div class="producto">
+                <h4>Antivirus Premium (1 año)</h4>
+                <p>Protección contra amenazas digitales.</p>
+                <p><strong>C$ 550.00</strong></p>
+                <button class="btn-add" onclick="agregar('Antivirus')">Seleccionar</button>
+            </div>
+            <div class="producto">
+                <h4>Consultoría de Optimización</h4>
+                <p>Mejora de rendimiento de equipos PC.</p>
+                <p><strong>C$ 800.00</strong></p>
+                <button class="btn-add" onclick="agregar('Optimización')">Seleccionar</button>
+            </div>
+            <div class="producto">
+                <h4>Soporte Técnico Remoto</h4>
+                <p>Asistencia técnica especializada 1h.</p>
+                <p><strong>C$ 450.00</strong></p>
+                <button class="btn-add" onclick="agregar('Soporte')">Seleccionar</button>
+            </div>
+            <div class="producto">
+                <h4>Diseño de Landing Page</h4>
+                <p>Desarrollo web profesional corporativo.</p>
+                <p><strong>C$ 2,500.00</strong></p>
+                <button class="btn-add" onclick="agregar('Landing Page')">Seleccionar</button>
+            </div>
+            <div class="producto">
+                <h4>Curso Programación Web</h4>
+                <p>Formación desde nivel básico.</p>
+                <p><strong>C$ 1,200.00</strong></p>
+                <button class="btn-add" onclick="agregar('Curso Web')">Seleccionar</button>
             </div>
         </div>
 
-        <div style="margin-top: 20px; background: #e8f6f3; padding: 15px; border-radius: 5px;">
-            <strong>Carrito:</strong> <span id="carrito-resumen">Vacío</span>
-        </div>
-
-        <button class="btn-pay" onclick="window.location.href='https://cryptomus.com/pay/TU_ID_AQUI'">Pagar servicios con Cryptomus</button>
+        <button class="btn-pay" onclick="window.location.href='https://cryptomus.com/pay/TU_ID_AQUI'">Proceder al Pago con Cryptomus</button>
     </div>
 
     <footer>
-        <p>Contacto: soporte@digitalnicaragua.com | Tel: +505 8855 1197</p>
+        <p>Contacto: soporte@digitalnicaragua.com | WhatsApp: +505 8855 1197</p>
         <div class="legal-links" style="margin-top: 20px;">
             <a href="terminos.html">Términos y Condiciones</a> | 
             <a href="privacidad.html">Política de Privacidad</a> | 
             <a href="reembolso.html">Política de Reembolso</a>
         </div>
+        <p style="margin-top: 20px;">© 2026 Digital Nicaragua. Todos los derechos reservados.</p>
     </footer>
 
     <script>
-        let carrito = [];
-        function agregarCarrito(nombre, precio) {
-            carrito.push(nombre);
-            document.getElementById('carrito-resumen').innerText = carrito.join(', ');
-            alert(nombre + " añadido al carrito.");
-        }
+        function agregar(item) { alert(item + " ha sido seleccionado."); }
     </script>
 </body>
 </html>
